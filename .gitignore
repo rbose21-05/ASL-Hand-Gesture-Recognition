@@ -1,0 +1,13 @@
+# Data folders with images
+data/
+dataset/
+data_split/
+
+# Model files (will create later)
+*.h5
+*.pickle
+
+# System files
+.DS_Store
+__pycache__/
+*.pyc
