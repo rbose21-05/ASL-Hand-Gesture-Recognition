@@ -5,6 +5,7 @@ from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model
 
 
+
 # Data paths
 TRAIN_DIR = './data_split/train'
 VAL_DIR = './data_split/validation'
