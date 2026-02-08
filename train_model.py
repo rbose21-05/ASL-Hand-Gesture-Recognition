@@ -45,3 +45,33 @@ base_model = MobileNetV2(
 )
 
 base_model.trainable = False
+
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+x = Dense(128, activation='relu')(x)
+x = Dropout(0.5)(x)
+predictions = Dense(3, activation='softmax')(x)
+
+# Create the final model
+model = Model(inputs=base_model.input, outputs=predictions)
+
+# Compile the model
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+print("Model compiled successfully!")
+model.summary()
+
+# Train the model
+print("\nStarting training...")
+history = model.fit(
+    train_generator,
+    epochs=20,
+    validation_data=val_generator,
+    verbose=1
+)
+
+print("\n Training complete!")
