@@ -2,10 +2,20 @@
 data/
 dataset/
 data_split/
+asl_abc/
+asl_env/
+
+#test files
+camera_view.py
+debug_frame.jpg
+hand_landmarker.task
+test_images/
+webcam_predict.py
 
 # Model files (will create later)
 *.h5
 *.pickle
+*.keras
 
 # System files
 .DS_Store

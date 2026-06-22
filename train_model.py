@@ -3,12 +3,19 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_accuracy',
+    patience=3,
+    restore_best_weights=True
+)
 
 
 
 # Data paths
-TRAIN_DIR = './data_split/train'
-VAL_DIR = './data_split/validation'
+TRAIN_DIR = './asl_abc/train'
+VAL_DIR = './asl_abc/validate'
 
 # Image parameters
 IMG_SIZE = (224, 224)
@@ -21,7 +28,7 @@ train_datagen = ImageDataGenerator(
     width_shift_range=0.1,
     height_shift_range=0.1,
     zoom_range=0.1,
-    horizontal_flip=True
+    #horizontal_flip=True
 )
 
 train_generator = train_datagen.flow_from_directory(
@@ -45,13 +52,15 @@ base_model = MobileNetV2(
     weights='imagenet'
 )
 
-base_model.trainable = False
+base_model.trainable = True
+for layer in base_model.layers[:-30]:
+    layer.trainable = False
 
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
 x = Dense(128, activation='relu')(x)
 x = Dropout(0.5)(x)
-predictions = Dense(3, activation='softmax')(x)
+predictions = Dense(5, activation='softmax')(x)
 
 # Create the final model
 model = Model(inputs=base_model.input, outputs=predictions)
@@ -70,9 +79,10 @@ model.summary()
 print("\nStarting training...")
 history = model.fit(
     train_generator,
-    epochs=20,
+    epochs=5,
     validation_data=val_generator,
+    callbacks=[early_stop],
     verbose=1
 )
-
+model.save("asl_model_2.keras")
 print("\n Training complete!")

@@ -1,9 +1,10 @@
 import os
 import shutil
 import random
-SOURCE_DIR = './dataset'
-OUTPUT_DIR = './data_split'
-number_of_classes = 3
+SOURCE_DIR = './asl_alphabet_train'
+OUTPUT_DIR = './asl_abc'
+
+classes = ['A', 'B', 'C']
 
 
 if not os.path.exists(OUTPUT_DIR):
@@ -24,9 +25,9 @@ if not os.path.exists(val_dir):
     print(f"Created {val_dir}")
 
 
-for class_num in range(number_of_classes):
-    train_class_dir = os.path.join(train_dir, str(class_num))
-    val_class_dir = os.path.join(val_dir, str(class_num))
+for class_name in classes:
+    train_class_dir = os.path.join(train_dir, class_name)
+    val_class_dir = os.path.join(val_dir, class_name)
     
     if not os.path.exists(train_class_dir):
         os.makedirs(train_class_dir)
@@ -36,13 +37,14 @@ for class_num in range(number_of_classes):
         os.makedirs(val_class_dir)
         print(f"Created {val_class_dir}")
 
-    source_class_dir = os.path.join(SOURCE_DIR, str(class_num))
+    source_class_dir = os.path.join(SOURCE_DIR, class_name)
+    images = images[:1000]
     images = [ f for f in os.listdir(source_class_dir) if f.endswith('.jpg') or f.endswith('.png') ]
     random.shuffle(images)
     split_index = int(0.8 * len(images))
     train_images = images[:split_index]
     val_images = images[split_index:]
-    print(f"Class {class_num}: {len(train_images)} images for training, {len(val_images)} images for validation.")
+    print(f"Class {class_name}: {len(train_images)} images for training, {len(val_images)} images for validation.")
     
     for img_name in train_images:
         src_path = os.path.join(source_class_dir, img_name)
